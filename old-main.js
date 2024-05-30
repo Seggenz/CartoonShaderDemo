@@ -5,42 +5,6 @@ import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examp
 import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/postprocessing/RenderPass.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
 
-
-
-const vertexShader = `
-varying vec3 vColor;
-
-void main() {
-    vColor = color; // Przekazujemy oryginalny kolor
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-
-const fragmentShader = `
-varying vec3 vColor;
-
-void main() {
-    vec3 color = vColor; // Zachowujemy oryginalny kolor
-
-    // Docienienie
-    //float threshold = 0.3; // Graniczna wartość dla efektu docienienia
-    //float brightness = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722)); // Konwertujemy do odcieni szarości
-
-    // Manipulacja jasnością (docienienie)
-    //color.rgb = mix(color.rgb, vec3(0.0), brightness); // Mieszamy kolor z czarnym proporcjonalnie do jasności
-
-    gl_FragColor = vec4(color, 1.0); // Ustawienie koloru fragmentu
-}
-`;
-
-const material = new THREE.ShaderMaterial({
-      uniforms: {
-        uColor: { value: new THREE.Color() } // Deklaracja uniform przechowującego kolor obiektu
-    },
-    vertexShader: vertexShader,
-    fragmentShader: fragmentShader
-});
-
 const loader = new GLTFLoader();
 let model;
 
