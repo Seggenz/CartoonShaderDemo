@@ -1,12 +1,3 @@
-/*
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-//import { OrbitControls } from './OrbitControls.js';
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-*/
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -25,7 +16,7 @@ export class ObjectRenderer {
         document.body.appendChild(this.renderer.domElement);
 
         this.textureLoader = new THREE.TextureLoader();
-        this.textureLoader.load('background-borderlands.jpg', (texture) => {
+        this.textureLoader.load('./images/background-borderlands.jpg', (texture) => {
             //console.log('Background texture loaded');
             this.scene.background = texture;
         });
@@ -41,6 +32,7 @@ export class ObjectRenderer {
 
         this.camera.position.z = 5;
 
+        /*
         this.outlinePass = new OutlinePass(new THREE.Vector2(window.innerWidth, window.innerHeight), this.scene, this.camera);
         this.outlinePass.edgeStrength = 20.0;
         this.outlinePass.edgeThickness = 2.0;
@@ -49,7 +41,7 @@ export class ObjectRenderer {
         this.outlinePass.hiddenEdgeColor.set(0x000000);
         this.outlinePass.overlayMaterial.blending = THREE.CustomBlending;
         this.composer.addPass(this.outlinePass);
-
+        */
         window.addEventListener('resize', () => {
             const width = window.innerWidth;
             const height = window.innerHeight;
@@ -67,40 +59,40 @@ export class ObjectRenderer {
         loader.load(modelPath, (gltf) => {
             gltf.scene.traverse((child) => {
                 if (child.isMesh && child.material instanceof THREE.MeshStandardMaterial) {
-                    /*
-                    const vertexShader = `
-                        varying vec3 vColor;
-                        void main() {
-                            vColor = color;
-                            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-                        }
-                    `;
-                    const fragmentShader = `
-                        varying vec3 vColor;
-                        void main() {
-                            vec3 color = vColor;
-                            gl_FragColor = vec4(color, 1.0);
-                        }
-                    `;
-                    
-                    const material = new THREE.ShaderMaterial({
-                        transparent: true,
-                        vertexShader: vertexShader,
-                        fragmentShader: fragmentShader,
-                        uniforms: {
-                            uColor: { value: new THREE.Color() }
-                        }
-                    });
 
-                    const color = child.material.color.clone();
-                    material.uniforms.uColor.value.copy(color);
-                    child.material = material;
-                    */
+                    const thickness = 0.02;
+                    const material = new THREE.ShaderMaterial({
+                        //transparent: true,
+                        vertexShader: /* glsl */`
+                            void main() {
+                                vec3 newPosition = position + normal * ${thickness};
+                                gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1);
+                            }
+                        `,
+                        fragmentShader: /* glsl */`
+                            void main() {
+                                gl_FragColor = vec4(0,0,0,1);
+                            }
+                        `,
+                        side: THREE.BackSide
+                    });
+                    
+                    const outline = new THREE.Mesh(child.geometry, material);
+                    child.add(outline);
+                    //const color = child.material.color.clone();
+                    //material.uniforms.uColor.value.copy(color);
+                    //child.material = material;
+
+                    //var outlineMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, side: THREE.BackSide } );
+                    //var outlineMesh = new THREE.Mesh( child.geometry, outlineMaterial );
+                    //outlineMesh.scale.multiplyScalar( 1.05 );
+                    //child.add(outlineMesh);
+                    
                 }
             });
 
             this.scene.add(gltf.scene);
-            this.outlinePass.selectedObjects = [gltf.scene];
+            //this.outlinePass.selectedObjects = [gltf.scene];
             console.log('Model loaded and added to OutlinePass:', gltf.scene);
         }, undefined, (error) => {
             console.error('Error loading model:', error);
@@ -115,4 +107,5 @@ export class ObjectRenderer {
 }
 
 export default ObjectRenderer;
+
 
