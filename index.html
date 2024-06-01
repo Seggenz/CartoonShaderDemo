@@ -7,9 +7,27 @@
     <style>
         body { margin: 0; }
         canvas { display: block; }
+        #controlPanel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            top: 1px;
+        }
     </style>
 </head>
 <body>
+    <div id="controlPanel">
+        <button id="boxModelButton">Box Model</button></br>
+        <button id="claptrapModelButton">Claptrap Model</button></br>
+        <button id="gunModelButton">Gun Model</button>
+    </div>
     <script type="module" src="./main.js"></script>
 </body>
 </html>
