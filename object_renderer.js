@@ -22,9 +22,20 @@ export class ObjectRenderer {
         });
 
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-        this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        this.directionalLight.position.set(5, 5, 5).normalize();
-        this.scene.add(this.directionalLight);
+
+        // Add ambient light
+        this.ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+        this.scene.add(this.ambientLight);
+
+        // Add a directional light
+        this.directionalLight1 = new THREE.DirectionalLight(0xffffff, 1);
+        this.directionalLight1.position.set(5, 5, 5).normalize();
+        this.scene.add(this.directionalLight1);
+
+        // Add a second directional light
+        this.directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+        this.directionalLight2.position.set(-5, -5, -5).normalize();
+        this.scene.add(this.directionalLight2);
 
         this.composer = new EffectComposer(this.renderer);
         this.renderPass = new RenderPass(this.scene, this.camera);
