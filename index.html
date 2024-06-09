@@ -21,13 +21,29 @@
             top: 1px;
         }
     </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js",
+                "three/examples/jsm/controls/OrbitControls": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js",
+                "three/examples/jsm/postprocessing/EffectComposer": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/postprocessing/EffectComposer.js",
+                "three/examples/jsm/postprocessing/RenderPass": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/postprocessing/RenderPass.js",
+                "three/examples/jsm/loaders/GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js"
+            }
+        }
+    </script>
+    <script type="module" src="./main.js"></script>
 </head>
 <body>
     <div id="controlPanel">
-        <button id="boxModelButton">Box Model</button></br>
-        <button id="claptrapModelButton">Claptrap Model</button></br>
+        <button id="boxModelButton">Box Model</button>
+        <button id="boxRawModelButton">Box Raw Model</button>
+        </br>
+        <button id="claptrapModelButton">Claptrap Model</button>
+        <button id="claptrapRawModelButton">Claptrap Raw Model</button>
+        </br>
         <button id="gunModelButton">Gun Model</button>
+        <button id="gunRawModelButton">Gun Raw Model</button>
     </div>
-    <script type="module" src="./main.js"></script>
 </body>
 </html>

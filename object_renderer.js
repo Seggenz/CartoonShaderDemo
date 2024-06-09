@@ -1,10 +1,8 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { MMDLoader } from 'three/examples/jsm/loaders/MMDLoader.js';
+import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+import { EffectComposer } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/postprocessing/RenderPass.js';
+import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/GLTFLoader.js';
 
 export class ObjectRenderer {
     constructor() {
@@ -156,6 +154,19 @@ export class ObjectRenderer {
                     }
                 }
             });
+            this.currentModel = gltf.scene;
+            this.scene.add(gltf.scene);
+        }, undefined, (error) => {
+            console.error('Error loading model:', error);
+        });
+    }
+
+    renderObjectRaw(modelPath){
+        const loader = new GLTFLoader();
+        if (this.currentModel) {
+            this.scene.remove(this.currentModel);
+        }
+        loader.load(modelPath, (gltf) => {
             this.currentModel = gltf.scene;
             this.scene.add(gltf.scene);
         }, undefined, (error) => {

@@ -6,7 +6,6 @@
   console.log('Creating ObjectRenderer instance');
   const objectRenderer = new ObjectRenderer();
   console.log('Calling renderObject');
-  //objectRenderer.renderObject('./models/box2.glb');
   console.log('Calling animate');
   objectRenderer.animate();
 
@@ -20,4 +19,16 @@
 
   document.getElementById('gunModelButton').addEventListener('click', () => {
     objectRenderer.renderObject('./models/gun.glb');
+  });
+
+  document.getElementById('boxRawModelButton').addEventListener('click', () => {
+    objectRenderer.renderObjectRaw('./models/box.glb');
+  });
+
+  document.getElementById('claptrapRawModelButton').addEventListener('click', () => {
+    objectRenderer.renderObjectRaw('./models/claptrap.glb');
+  });
+
+  document.getElementById('gunRawModelButton').addEventListener('click', () => {
+    objectRenderer.renderObjectRaw('./models/gun.glb');
   });
