@@ -6,22 +6,30 @@ import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/
 
 export class ObjectRenderer {
     constructor() {
-        console.log('Initializing ObjectRenderer...');
+        //Creating the scene
         this.scene = new THREE.Scene();
+        
+        //Creating the camera position
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
+        //Setting the renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer.gammaOutput = true;
+        this.renderer.gammaFactor = 2.2;
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
 
+        //Loading the background
         this.textureLoader = new THREE.TextureLoader();
-        this.textureLoader.load('./images/background.jpg', (texture) => {
+        this.textureLoader.load('./images/background3.jpg', (texture) => {
             this.scene.background = texture;
         });
 
+        //Adding controls
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Add ambient light
-        this.ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+        this.ambientLight = new THREE.AmbientLight(0x404040, 0.5); // soft white light
         this.scene.add(this.ambientLight);
 
         // Add a directional light
@@ -29,19 +37,15 @@ export class ObjectRenderer {
         this.directionalLight1.position.set(5, 5, 5).normalize();
         this.scene.add(this.directionalLight1);
 
-        // Add a second directional light
-        this.directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
-        this.directionalLight2.position.set(-5, -5, -5).normalize();
-        this.scene.add(this.directionalLight2);
-
+        //Setting postprocessing
         this.composer = new EffectComposer(this.renderer);
         this.renderPass = new RenderPass(this.scene, this.camera);
         this.composer.addPass(this.renderPass);
 
         this.camera.position.z = 5;
-
         this.currentModel = null;
 
+        //Updating the renderer/camera size when changing the window size
         window.addEventListener('resize', () => {
             const width = window.innerWidth;
             const height = window.innerHeight;
@@ -52,6 +56,7 @@ export class ObjectRenderer {
         });
     }
 
+    //Method to render object with cartoon shader
     renderObject(modelPath) {
         const loader = new GLTFLoader();
         if (this.currentModel) {
@@ -61,6 +66,7 @@ export class ObjectRenderer {
             gltf.scene.traverse((child) => {
                 if (child.isMesh) {
                     if (child.material instanceof THREE.MeshStandardMaterial) {
+                        //Updating the material maps
                         if (child.material.map) {
                             child.material.map.needsUpdate = true;
                         }
@@ -131,8 +137,11 @@ export class ObjectRenderer {
                             `,
                             side: THREE.DoubleSide
                         };
-
+                        
+                        //Creating material with toonShader
                         const toonMaterial = new THREE.ShaderMaterial(toonShader);
+
+                        //Creating the shader for outline effect
                         const outlineMaterial = new THREE.ShaderMaterial({
                             vertexShader: `
                                 void main() {
@@ -147,7 +156,8 @@ export class ObjectRenderer {
                             `,
                             side: THREE.BackSide
                         });
-
+                        
+                        //Adding the outline to model
                         const outline = new THREE.Mesh(child.geometry, outlineMaterial);
                         child.add(outline);
                         child.material = toonMaterial;
